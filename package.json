@@ -1,0 +1,19 @@
+{
+  "name": "e-voting-ketua-mpk",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "provision:voters": "node scripts/provision-voters.mjs",
+    "set:admin": "node scripts/set-admin.mjs"
+  },
+  "dependencies": {
+    "firebase": "^12.4.0"
+  },
+  "devDependencies": {
+    "vite": "^7.1.7"
+  }
+}

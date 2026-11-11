@@ -1,0 +1,29 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function isAdmin() { return signedIn() && request.auth.token.admin == true; }
+
+    match /settings/election {
+      allow read: if signedIn();
+      allow write: if isAdmin();
+    }
+
+    match /candidates/{candidateId} {
+      allow read: if signedIn();
+      allow create, update, delete: if isAdmin();
+    }
+
+    // Hanya pemilih yang bersangkutan dan admin dapat melihat status hak pilih.
+    match /voterStatus/{uid} {
+      allow read: if signedIn() && (request.auth.uid == uid || isAdmin());
+      allow write: if false; // Hanya Cloud Function Admin SDK yang menulis.
+    }
+
+    // Surat suara tidak pernah dapat dibaca oleh akun pemilih.
+    match /ballots/{ballotId} {
+      allow read: if isAdmin();
+      allow write: if false; // Hanya Cloud Function Admin SDK yang menulis.
+    }
+  }
+}
